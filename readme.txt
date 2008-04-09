@@ -4,7 +4,7 @@ Homepage link: http://blog.thydzik.com/category/thydzikgooglemap/
 Tags: Google, Google Maps, plugin, thydzikGoogleMap, Wordpress
 Requires at least: 2.3.2
 Tested up to: 2.5
-Stable tag: 1.0
+Stable tag: 1.1
 
 thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your Wordpress posts.
 
@@ -14,6 +14,9 @@ thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your W
 
    1. Ease of use, to create a Google map simply type thydzikGoogleMap(mapdata.xml, 600, 480) in your post on its own line.
    1. thydzikGoogleMap uses XML map data, this allows for maximum configurability, and supports multiple points and lines.
+   1. With version 1.1, thydzikGoogleMap supports cross-domain XML files by using a PHP proxy.
+
+Note: with version 1.1 I have renamed the plugin folder to thydzik-google-map, upgrading users will need to delete the old folder and install the plugin as normal.
 
 [Oficial Homepage](http://blog.thydzik.com/category/thydzikgooglemap/) (with working example)
 
@@ -22,7 +25,7 @@ thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your W
 
 1. Upload folder 'thydzikGoogleMap' to the  '/wp-content/plugins/' directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Under 'Options' > 'thydzik Google map', you will find the 'thydzik Google map setup' page, paste your API key in the box and click update. The default map size can be changed here if desired.
+1. Under 'Plugins' > 'thydzik Google Map', you will find the 'thydzik Google map setup' page, paste your API key in the box and click update options. The default map size can be changed here if desired.
 1. Upload a Google map XML data file with latitude and longitude points into the /wp-content/plugins/thydzikGoogleMap/' directory. An example XML file http://thydzik.com/thydzikGoogleMap/example.xml
 1. Place 'thydzikGoogleMap(example.xml, 640, 480)' in your posts on its own line where you want the Google map to appear. example.xml is the XML file uploaded in the previous steps. 640 and 480 is the optional width and height of the Google map. If left out the default size defined in the thydzikGoogleMap options will be used.
 
@@ -41,7 +44,7 @@ Please note, this is my first attempt at any 'real' php coding and my first atte
 
 A few pointers:
 
-    * a markers folder is included with numbered pointers, these are used only when icon=”x” (where x is an integer), if this is excluded or pointers are alphabetical default Googles pointers will be used.
+    * a markers folder is included with numbered pointers, these are used only when icon=”x” (where x is an integer), if this is excluded or pointers are alphabetical, default Googles pointers will be used.
     * if width and height is excluded, the default width and height (460 and 345 respectively), found in the configuration page will be used.
     * thydzikGoogleMap automatically centres and zooms in on the points and lines, this may not always give the best results.
     * thydzikGoogleMap will produce a Google map only if the XML file is found, this was made so that examples i.e. thydzikGoogleMap(mapdata.xml) could be posted without producing a Google map.
