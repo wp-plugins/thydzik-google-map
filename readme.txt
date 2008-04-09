@@ -1,6 +1,6 @@
 === thydzikGoogleMap ===
 Contributors: thydzik
-Donate link: http://blog.thydzik.com/category/thydzikgooglemap/
+Homepage link: http://blog.thydzik.com/category/thydzikgooglemap/
 Tags: Google, Google Maps, plugin, thydzikGoogleMap, Wordpress
 Requires at least: 2.3.2
 Tested up to: 2.5
