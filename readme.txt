@@ -2,9 +2,9 @@
 Contributors: thydzik
 Donate link: http://blog.thydzik.com/category/thydzikgooglemap/
 Tags: Google, Google Maps, plugin, thydzikGoogleMap, Wordpress
-Requires at least: Unknown (tested only on 2.3.2 and higher)
+Requires at least: 2.3.2
 Tested up to: 2.5
-Stable tag: trunk
+Stable tag: 1.0
 
 thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your Wordpress posts.
 
