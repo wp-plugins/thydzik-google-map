@@ -1,8 +1,0 @@
-<markers>
-  <!-- Dont use copy and paste on this XML file, use "View Source" or "Save As"
-       What the browser displays is *interpreted* XML, not XML source. -->
- <marker lat="-31.9554" lng="115.85859" html="Perth&lt;br&gt;Western Australia"  label="Marker One" icon="1"/>
- <marker lat="-32.053128" lng="115.745869" html="Fremantle" label="Marker Two" icon="2"/>
- <marker lat="-32.036036" lng="115.92724" html="Lynwood&lt;br&gt;Residence of the author"  label="Marker Three"/>
-</markers> 
-
