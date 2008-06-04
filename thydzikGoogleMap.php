@@ -45,7 +45,7 @@ add_action('wp_head', 'thydzikGoogleMapHeader');
 
 function thydzikGoogleMapHeader() {
 	global $thydzikGoogleMap_googleMapKey;
-	echo  chr(13).'<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$thydzikGoogleMap_googleMapKey.'" type="text/javascript"></script>'.chr(13).'<script src="'.get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/thydzikGoogleMap.js" type="text/javascript"></script>'.chr(13);
+	echo  chr(13).'<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$thydzikGoogleMap_googleMapKey.'" type="text/javascript"></script>'.chr(13).'<script src="'.get_bloginfo('url').'/wp-content/plugins/thydzik-google-map/thydzikGoogleMap.js" type="text/javascript"></script>'.chr(13);
 }
 
 add_filter('the_content', 'thydzikFindGoogleMap');
@@ -63,7 +63,7 @@ function thydzikFindGoogleMap($content) {
 		$params = split(',', $temp2);
 		array_walk($params, 'trim_value');
 		if (!url_exists($params[0])) { //check if the initial file exists, if not try appending full blog address
-			$params[0] = get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/'.$params[0];
+			$params[0] = get_bloginfo('url').'/wp-content/plugins/thydzik-google-map/'.$params[0];
 		}
 		if (!url_exists($params[0])) { //check file exists
 			return $content; //exit with no change if file doesn't exist
@@ -80,10 +80,10 @@ function thydzikFindGoogleMap($content) {
 			$params[3] = $params[3]."/";
 		}
 		
-		$params[4] = get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/markers/";
+		$params[4] = get_bloginfo('url')."/wp-content/plugins/thydzik-google-map/markers/";
 		
 		if ((stripos($params[0], 'http') == 0 | stripos($params[0], 'ftp') == 0) & (stripos($params[0], 'thydzikGoogleMapXML.php') === false)) {
-			$temp5 = 	get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/xml_proxy.php?url=";
+			$temp5 = 	get_bloginfo('url')."/wp-content/plugins/thydzik-google-map/xml_proxy.php?url=";
 			$path_parts = pathinfo($params[0]);
 			$params[3] = $path_parts['dirname'];
 			if ($params[3]) {
