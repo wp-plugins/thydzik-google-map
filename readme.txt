@@ -7,6 +7,8 @@ Requires at least: 2.3.2
 Tested up to: 2.5.1
 Stable tag: 1.3
 
+NOTE: this is version 1.3, Wordpress isn't updating the version information.
+
 thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your Wordpress posts.
 
 == Description ==
@@ -14,10 +16,10 @@ thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your W
 thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your Wordpress posts. There are two main advantages over other existing Google maps plugins and they are:
 
    1. Ease of use, to create a Google map simply type thydzikGoogleMap(mapdata.xml, 600, 480) in your post on its own line.
-   1. thydzikGoogleMap uses XML map data, this allows for maximum configurability, and supports multiple points and lines.
-   1. With version 1.1, thydzikGoogleMap supports cross-domain XML files by using a PHP proxy.
+   1. uses XML map data, this allows for maximum configurability, and supports multiple points and lines.
+   1. supports cross-domain XML files by using a PHP proxy.
 
-Note: with version 1.1 and above,  the plugin folder is renamed to thydzik-google-map, upgrading users will need to delete the old folder and install the plugin as per the installation.
+Note: with versions above 1.1,  the plugin folder is renamed to thydzik-google-map, upgrading users will need to delete the old folder and install the plugin as per the installation.
 
 [Oficial Homepage](http://thydzik.com/category/thydzikgooglemap/) (with working example)
 
