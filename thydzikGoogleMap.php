@@ -3,7 +3,7 @@
 Plugin Name: thydzikGoogleMap
 Plugin URI: http://blog.thydzik.com/category/thydzikgooglemap/
 Description: A plugin to create inline Wordpress Google maps.
-Version: 1.1
+Version: 1.3
 Author: Travis Hydzik
 Author URI: http://blog.thydzik.com
 */ 
