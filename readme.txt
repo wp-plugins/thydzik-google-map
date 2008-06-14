@@ -7,8 +7,6 @@ Requires at least: 2.3.2
 Tested up to: 2.5.1
 Stable tag: 1.3
 
-NOTE: this is version 1.3, Wordpress isn't updating the version information.
-
 thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your Wordpress posts.
 
 == Description ==
