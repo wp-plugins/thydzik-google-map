@@ -45,7 +45,7 @@ Please note, this is my first attempt at any 'real' php coding and my first atte
 
 A few pointers:
 
-    * a markers folder is included with numbered pointers, these are used only when icon=”x” (where x is an integer), if this is excluded or pointers are alphabetical, default Googles pointers will be used.
+    * a markers folder is included with numbered pointers, these are used only when icon="x" (where x is an integer), if this is excluded or pointers are alphabetical, default Googles pointers will be used.
     * if width and height is excluded, the default width and height (460 and 345 respectively), found in the configuration page will be used.
     * thydzikGoogleMap automatically centres and zooms in on the points and lines, this may not always give the best results.
     * thydzikGoogleMap will produce a Google map only if the XML file is found, this was made so that examples i.e. thydzikGoogleMap(mapdata.xml) could be posted without producing a Google map.
