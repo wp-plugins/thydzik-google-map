@@ -1,5 +1,5 @@
 
-function makeMap(idname, xmlname, awidth, aheight, datafolder, markersfolder) {
+function makeMap(idname, xmlname, awidth, aheight, datafolder, markersfolder, azoom) {
 	if (GBrowserIsCompatible()) {
 		// arrays to hold copies of the markers and html used by the side_bar
 		// because the function closure trick doesnt work there
@@ -99,6 +99,25 @@ function makeMap(idname, xmlname, awidth, aheight, datafolder, markersfolder) {
 			
 				// ========= Now process the polylines ===========
 				var lines = xmlDoc.documentElement.getElementsByTagName("line");
+				// read each line
+				for (var a = 0; a < lines.length; a++) {
+					// get any line attributes
+					var colour = lines[a].getAttribute("colour");
+					var width  = parseFloat(lines[a].getAttribute("width"));
+					// read each point on that line
+					var points = lines[a].getElementsByTagName("point");
+					var pts = [];
+						for (var i = 0; i < points.length; i++) {
+							pts[i] = new GLatLng(parseFloat(points[i].getAttribute("lat")),
+												 parseFloat(points[i].getAttribute("lng")));
+							bounds.extend(pts[i]);
+							}
+					map.addOverlay(new GPolyline(pts,colour,width));
+					bounds.extend(point);
+				} //for
+				
+				// ========= Now process the polylines RboGEO uses points ===========
+				var lines = xmlDoc.documentElement.getElementsByTagName("points");
 				// read each line
 				for (var a = 0; a < lines.length; a++) {
 					// get any line attributes

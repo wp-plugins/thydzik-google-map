@@ -21,8 +21,4 @@
 	echo $xml;
 	curl_close($session);
 
-	function fileExtension($file) {
-		$extension = array_pop(explode(".", $file));
-	}
-
 ?>

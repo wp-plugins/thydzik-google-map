@@ -1,11 +1,11 @@
 <?php 
 /* 
 Plugin Name: thydzikGoogleMap
-Plugin URI: http://thydzik.com/category/thydzikgooglemap/
+Plugin URI: http://blog.thydzik.com/category/thydzikgooglemap/
 Description: A plugin to create inline Wordpress Google maps.
-Version: 1.3
+Version: 1.3.1
 Author: Travis Hydzik
-Author URI: http://thydzik.com
+Author URI: http://blog.thydzik.com
 */ 
 /*  Copyright 2008 Travis Hydzik (email : mail@thydzik.com)
 
@@ -23,6 +23,22 @@ Author URI: http://thydzik.com
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
+//lets create some nice output for our google bots.
+if(!function_exists('get_option')) {
+	$host = $_SERVER['HTTP_HOST'];
+	//function does not exist so not being run from wordpress
+	echo '<a href="http://'.$host.'" target="_self">'.$host.'</a> are proudly using the <a href="http://wordpress.org" target="_blank">Wordpress</a> plugin <a href="http://thydzik.com/category/thydzikgooglemap/" target="_blank">thydzikGoogleMap</a> to display inline Google maps on their blog.';
+
+	//create dummy function
+	function get_option($s) {
+		return $s;
+	}	
+
+	exit;
+}
+
+
 // get the google maps key
 $thydzikGoogleMap_googleMapKey = get_option("thydzikGoogleMap_key");
 
@@ -54,12 +70,12 @@ function thydzikFindGoogleMap($content) {
 	global $mapH;
 	global $mapID;
 
-	$tempString = '<p>thydzikGoogleMap('; //case insensitive
-	$temp = stripos($content, $tempString);
+	$searchString = '<p>thydzikGoogleMap('; //case insensitive
+	$temp = stripos($content, $searchString);
 	if ($temp === false) {
 		return $content;
 	} else {
-		$temp2 = substr($content, $temp + strlen($tempString), stripos($content, ")</p>", $temp) - $temp - strlen($tempString)) ; //get parameters in brackets
+		$temp2 = substr($content, $temp + strlen($searchString), stripos($content, ")</p>", $temp) - $temp - strlen($searchString)) ; //get parameters in brackets
 		$params = split(',', $temp2);
 		array_walk($params, 'trim_value');
 		if (!url_exists($params[0])) { //check if the initial file exists, if not try appending full blog address
@@ -83,20 +99,20 @@ function thydzikFindGoogleMap($content) {
 		$params[4] = get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/markers/";
 		
 		if ((stripos($params[0], 'http') == 0 | stripos($params[0], 'ftp') == 0) & (stripos($params[0], 'thydzikGoogleMapXML.php') === false)) {
-			$temp5 = 	get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/xml_proxy.php?url=";
+			$proxyString = 	get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/xml_proxy.php?url=";
 			$path_parts = pathinfo($params[0]);
 			$params[3] = $path_parts['dirname'];
 			if ($params[3]) {
 				$params[3] = $params[3]."/";
 			}
 		} else {
-			$temp5 = "";
+			$proxyString = "";
 			$params[3] = "";
 		}
 			
 		global $post;
 		$mapID = 'map-'.($post->ID);
-		$temp3 = '<div id="'.$mapID.'" style="width:0px; height:0px"></div>'.chr(13).'<script type="text/javascript">makeMap("'.$mapID.'", "'.$temp5.$params[0].'", "'.$params[1].'", "'.$params[2].'", "'.$params[3].'", "'.$params[4].'");</script>';//javascript for map code
+		$temp3 = '<div id="'.$mapID.'" style="width:0px; height:0px"></div>'.chr(13).'<script type="text/javascript">makeMap("'.$mapID.'", "'.$proxyString.rawurlencode($params[0]).'", "'.$params[1].'", "'.$params[2].'", "'.$params[3].'", "'.$params[4].'");</script>';//javascript for map code
 		$temp4 = substr($content, $temp, stripos($content, ")</p>", $temp) - $temp + 5); //full text to replace
 		if (stripos($content, '<p>'.$temp4.'</p>') === false) {//search for <p> tags, if exist remove. not required anymore
 			return str_ireplace($temp4, $temp3 , $content);
@@ -123,6 +139,9 @@ if(!function_exists('str_ireplace')) {
 function trim_value(&$value){ 
 	$value = trim($value); 
 }
+
+
+
 
 function url_exists($url) {
     // Version 4.x supported
@@ -209,5 +228,7 @@ EOF;
 
 // admin hooks
 add_action('admin_menu', 'thydzikGoogleMap_adminPanel');
+
+
 
 ?>
