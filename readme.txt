@@ -1,11 +1,10 @@
 === thydzikGoogleMap ===
 Contributors: thydzik
-Donate link: 
 Homepage link: http://thydzik.com/category/thydzikgooglemap/
 Tags: Google, Google Maps, plugin, thydzikGoogleMap, Wordpress
 Requires at least: 2.3.2
-Tested up to: 2.6.5
-Stable tag: 1.3.1
+Tested up to: 2.7
+Stable tag: 1.3.2
 
 thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your Wordpress posts.
 
@@ -19,7 +18,7 @@ thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your W
 
 Note: with versions above 1.1,  the plugin folder is renamed to thydzik-google-map, upgrading users will need to delete the old folder and install the plugin as per the installation.
 
-[Oficial Homepage](http://thydzik.com/category/thydzikgooglemap/) (with working example)
+[Oficial Homepage](http://thydzik.com/category/thydzikgooglemap/) (with working examples)
 
 == Installation ==
 
@@ -45,7 +44,7 @@ Please note, this is my first attempt at any 'real' php coding and my first atte
 
 A few pointers:
 
-    * a markers folder is included with numbered pointers, these are used only when icon="x" (where x is an integer), if this is excluded or pointers are alphabetical, default Googles pointers will be used.
+    * a markers folder is included with numbered pointers, these are used only when icon=”x” (where x is an integer), if this is excluded or pointers are alphabetical, default Googles pointers will be used.
     * if width and height is excluded, the default width and height (460 and 345 respectively), found in the configuration page will be used.
     * thydzikGoogleMap automatically centres and zooms in on the points and lines, this may not always give the best results.
     * thydzikGoogleMap will produce a Google map only if the XML file is found, this was made so that examples i.e. thydzikGoogleMap(mapdata.xml) could be posted without producing a Google map.

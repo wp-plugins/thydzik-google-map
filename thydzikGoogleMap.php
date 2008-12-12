@@ -3,7 +3,7 @@
 Plugin Name: thydzikGoogleMap
 Plugin URI: http://blog.thydzik.com/category/thydzikgooglemap/
 Description: A plugin to create inline Wordpress Google maps.
-Version: 1.3.1
+Version: 1.3.2
 Author: Travis Hydzik
 Author URI: http://blog.thydzik.com
 */ 
@@ -70,13 +70,12 @@ function thydzikFindGoogleMap($content) {
 	global $mapH;
 	global $mapID;
 
-	$searchString = '<p>thydzikGoogleMap('; //case insensitive
-	$temp = stripos($content, $searchString);
-	if ($temp === false) {
+	preg_match("/<p>\s*thydzikGoogleMap\((.*)\)\s*<\/p>/", $content, $regs);
+	
+	if (!$regs[1]) {
 		return $content;
 	} else {
-		$temp2 = substr($content, $temp + strlen($searchString), stripos($content, ")</p>", $temp) - $temp - strlen($searchString)) ; //get parameters in brackets
-		$params = split(',', $temp2);
+		$params = split(',', $regs[1]);
 		array_walk($params, 'trim_value');
 		if (!url_exists($params[0])) { //check if the initial file exists, if not try appending full blog address
 			$params[0] = get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/'.$params[0];
@@ -112,13 +111,11 @@ function thydzikFindGoogleMap($content) {
 			
 		global $post;
 		$mapID = 'map-'.($post->ID);
-		$temp3 = '<div id="'.$mapID.'" style="width:0px; height:0px"></div>'.chr(13).'<script type="text/javascript">makeMap("'.$mapID.'", "'.$proxyString.rawurlencode($params[0]).'", "'.$params[1].'", "'.$params[2].'", "'.$params[3].'", "'.$params[4].'");</script>';//javascript for map code
-		$temp4 = substr($content, $temp, stripos($content, ")</p>", $temp) - $temp + 5); //full text to replace
-		if (stripos($content, '<p>'.$temp4.'</p>') === false) {//search for <p> tags, if exist remove. not required anymore
-			return str_ireplace($temp4, $temp3 , $content);
-		} else {
-			return str_ireplace('<p>'.$temp4.'</p>', $temp3 , $content);			
-		}
+		
+		$code = '<div id="'.$mapID.'" style="width:0px; height:0px"></div>'.chr(13).'<script type="text/javascript">makeMap("'.$mapID.'", "'.$proxyString.rawurlencode($params[0]).'", "'.$params[1].'", "'.$params[2].'", "'.$params[3].'", "'.$params[4].'");</script>'; //javascript for map code
+		
+		return str_ireplace($regs[0], $code , $content);
+		
 	}
 }
 
@@ -139,9 +136,6 @@ if(!function_exists('str_ireplace')) {
 function trim_value(&$value){ 
 	$value = trim($value); 
 }
-
-
-
 
 function url_exists($url) {
     // Version 4.x supported
