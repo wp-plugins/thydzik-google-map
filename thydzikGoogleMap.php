@@ -1,11 +1,11 @@
 <?php 
 /* 
-	Plugin Name: thydzikGoogleMap
-	Plugin URI: http://thydzik.com/category/thydzikgooglemap/
-	Description: A plugin to create inline Wordpress Google maps.
-	Version: 1.4
-	Author: Travis Hydzik
-	Author URI: http://thydzik.com
+Plugin Name: thydzikGoogleMap
+Plugin URI: http://thydzik.com/category/thydzikgooglemap/
+Description: A plugin to create inline Wordpress Google maps.
+Version: 1.4
+Author: Travis Hydzik
+Author URI: http://thydzik.com
 */ 
 /*  Copyright 2008 Travis Hydzik (email : mail@thydzik.com)
 
