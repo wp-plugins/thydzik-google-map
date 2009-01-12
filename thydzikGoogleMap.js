@@ -10,6 +10,9 @@ function makeMap(idname, xmlname, awidth, aheight, datafolder, markersfolder, az
 		m.style.width = awidth;
 		m.style.height = aheight;
 		
+
+		//azoom = -1; //a value of -1 sets the map automatic zoom
+		
 		var map = new GMap(m);
 	  
 		// Create our base marker icon 
@@ -116,7 +119,7 @@ function makeMap(idname, xmlname, awidth, aheight, datafolder, markersfolder, az
 					bounds.extend(point);
 				} //for
 				
-				// ========= Now process the polylines RboGEO uses points ===========
+				// ========= Now process the polylines RoboGEO uses points ===========
 				var lines = xmlDoc.documentElement.getElementsByTagName("points");
 				// read each line
 				for (var a = 0; a < lines.length; a++) {
@@ -136,15 +139,19 @@ function makeMap(idname, xmlname, awidth, aheight, datafolder, markersfolder, az
 				} //for
 				
 				// ===== determine the zoom level from the bounds =====
-				map.setZoom(map.getBoundsZoomLevel(bounds));
+				if (azoom == -1) {
+					map.setZoom(map.getBoundsZoomLevel(bounds));
+				} else {
+					map.setZoom(azoom);
+				}
 				
 				// ===== determine the centre from the bounds ======
 				map.setCenter(bounds.getCenter());
 		
 			} else if(responseCode == -1) {
-				alert("Data request timed out. Please try later.");
+				//alert("Data request timed out. Please try later.");
 			} else { 
-				alert("Request resulted in error. Check XML file is retrievable.");
+				//alert("Request resulted in error. Check XML file is retrievable.");
 			}
 		}); //gdownloadurl
     } //if (GBrowserIsCompatible())
