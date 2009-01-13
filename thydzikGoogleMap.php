@@ -76,7 +76,7 @@ function thydzikFindGoogleMap($content) {
 	global $mapH;
 	global $mapID;
 
-	preg_match("/<p>\s*thydzikGoogleMap\((.*)\)\s*<\/p>/", $content, $regs);
+	preg_match("/<p>\s*thydzikGoogleMap\((.*)\)\s*<\/p>/i", $content, $regs);
 	
 	if (!$regs[1]) {
 		return $content;
