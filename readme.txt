@@ -43,12 +43,13 @@ where example.xml is your xml file, and example xml file is included with thdyzi
       maptype is the optional map type parameters, which can be (Normal, G_NORMAL_MAP, N), (SATELLITE, G_SATELLITE_MAP, S), (HYBRID, G_HYBRID_MAP, H), (PHYSICAL, G_PHYSICAL_MAP, P, TERRAIN or T) if left out Normal is defined.
 
 width, height, zoom and maptype can be in any order and are case insensitive, all the following are valid uses:
-thydzikGoogleMap(example.xml)
-thydzikGoogleMap(example.xml, 5)
-thydzikgooglemap(example.xml, 4, S)
-tHyDzIkGoOgLeMaP(example.xml,hYbRiD,450,225)
-thydzikGoogleMap(example.xml, TERRAIN)
-thydzikGoogleMap(example.xml, 640, 480)
+
+* thydzikGoogleMap(example.xml)
+* thydzikGoogleMap(example.xml, 5)
+* thydzikgooglemap(example.xml, 4, S)
+* tHyDzIkGoOgLeMaP(example.xml,hYbRiD,450,225)
+* thydzikGoogleMap(example.xml, TERRAIN)
+* thydzikGoogleMap(example.xml, 640, 480)
 
 Multiple thydzikGoogleMap can be displayed in a single post.
 
