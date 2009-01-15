@@ -30,7 +30,7 @@ Note: with versions above 1.1,  the plugin folder is renamed to thydzik-google-m
 1. Under 'Plugins' > 'thydzik Google Map', you will find the 'thydzik Google map setup' page, paste your API key in the box and click update options. The default map size can be changed here if desired.
 1. Upload a Google map XML data file with latitude and longitude points. An example XML file http://thydzik.com/thydzikGoogleMap/example.xml is included, it is better to create a directory outside the plugin directory as every time you update your xml files will be deleted.
 
-== Use ==
+** Use **
 
 thydzikGoogleMap is called in a Wordpress post by writing the following on a single line where you want the Google Map to appear:
 
