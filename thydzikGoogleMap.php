@@ -1,17 +1,17 @@
 <?php 
 /* 
-Plugin Name: thydzikGoogleMap
-Plugin URI: http://thydzik.com/category/thydzikgooglemap/
-Description: A plugin to create inline Wordpress Google maps.
-Version: 1.4
-Author: Travis Hydzik
-Author URI: http://thydzik.com
+	Plugin Name: thydzikGoogleMap
+	Plugin URI: http://blog.thydzik.com/category/thydzikgooglemap/
+	Description: A plugin to create inline Wordpress Google maps.
+	Version: 1.4.5
+	Author: Travis Hydzik
+	Author URI: http://blog.thydzik.com
 */ 
-/*  Copyright 2008 Travis Hydzik (email : mail@thydzik.com)
+/*  Copyright 2009 Travis Hydzik (mail@thydzik.com)
 
-    This program is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -20,8 +20,8 @@ Author URI: http://thydzik.com
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 */
 
 //lets create some nice output for our google bots.
@@ -41,6 +41,9 @@ if(!function_exists('get_option')) {
 // get the google maps key
 $thydzikGoogleMap_googleMapKey = get_option("thydzikGoogleMap_key");
 
+//define global variable first
+$first = true;
+
 // get the map width and height
 $mapW = get_option("thydzikGoogleMap_w");
 $mapH = get_option("thydzikGoogleMap_h");
@@ -56,33 +59,32 @@ if (!$mapH) {
 }
 
 // wp_head is triggered within the <head></head> section of the user's template by the wp_head() function
-add_action('wp_head', 'thydzikGoogleMapHeader');
+//add_action('wp_head', 'thydzikGoogleMapHeader');
 
 function thydzikGoogleMapHeader() {
 	global $thydzikGoogleMap_googleMapKey;
-	echo '<!--thydzikGoogleMap script header-->'.chr(13);
+	echo '<!--thydzikGoogleMap-->'.chr(13);
+	/*echo '<script type="text/javascript" src="http://www.google.com/jsapi?key='.$thydzikGoogleMap_googleMapKey.'"></script>'.chr(13);
+	echo '<script type="text/javascript" src="'.get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/thydzikGoogleMap.js"></script>'.chr(13);
 	echo '<script type="text/javascript">'.chr(13);
-	echo '	var url = "'.get_bloginfo('url').'";'.chr(13);
-	echo '	if (window.location.href.indexOf(url) == 0) {'.chr(13);
-	echo "		document.write('".'<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.$thydzikGoogleMap_googleMapKey.'" type="text/JavaScript"><\/script>'."');".chr(13);
-	echo "		document.write('".'<script src="'.get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/thydzikGoogleMap.js" type="text/JavaScript"><\/script>'."');".chr(13);
-	echo '	}'.chr(13);
+	echo 'google.load("maps","2");'.chr(13);
 	echo '</script>'.chr(13);
+	echo '<!--/thydzikGoogleMap-->'.chr(13);*/
 }
 
 add_filter('the_content', 'thydzikFindGoogleMap');
+
 function thydzikFindGoogleMap($content) {
+	global $thydzikGoogleMap_googleMapKey;
+	global $first;
 	global $mapW;
 	global $mapH;
-	global $mapID;
 
-	preg_match("/<p>\s*thydzikGoogleMap\((.*)\)\s*<\/p>/i", $content, $regs);
+	preg_match_all("/<p>\s*thydzikGoogleMap\(([^<]*)\)\s*<\/p>/i", $content, $regs, PREG_SET_ORDER);
 	
-	if (!$regs[1]) {
-		return $content;
-	} else {
+	foreach ($regs as $val) {
 		//split the parameters and trim any spaces
-		$params = split(',', $regs[1]);
+		$params = split(',', $val[1]);
 		array_walk($params, 'trim_value');
 		
 		//assume the first parameters is always the xml file
@@ -92,7 +94,8 @@ function thydzikFindGoogleMap($content) {
 		}
 		if (!url_exists($xml_path)) { //check file exists
 			return $content; //exit with no change if file doesn't exist
-		}
+		} //if (!url_exists($xml_path))
+		
 		//process any other parameters
 		//assume width is always before height, zoom is always < 18
 		
@@ -100,6 +103,7 @@ function thydzikFindGoogleMap($content) {
 		$width_val = $mapW."px";
 		$height_val = $mapH."px";
 		$zoom_val = -1; // a value of -1 means automatic zoom
+		$type_val = "Normal";
 		$width_found = false; // used to determine if the width has been found
 		for($i = 1; $i < count($params); $i++) {
 			if (is_numeric($params[$i])) { // is a numeric
@@ -114,8 +118,14 @@ function thydzikFindGoogleMap($content) {
 						$width_found = true;
 					}
 				}
+			} else { // a string
+				$params[$i] = strtoupper($params[$i]);
+				if (in_array($params[$i], array("NORMAL", "G_NORMAL_MAP", "N", "SATELLITE", "G_SATELLITE_MAP", "S", "HYBRID", "G_HYBRID_MAP", "H", "PHYSICAL", "G_PHYSICAL_MAP", "P", "TERRAIN", "T"))) {// must be a map type parameter
+					$type_val = $params[$i];
+				}
+				
 			}
-		}
+		} //for loop
 
 		$path_parts = pathinfo($xml_path);
 		$content_path = $path_parts['dirname'];
@@ -136,21 +146,35 @@ function thydzikFindGoogleMap($content) {
 			$proxyString = "";
 			$content_path = "";
 		}
-			
-		global $post;
-		$mapID = 'map-'.($post->ID);
 		
+		$microtime = microtime_string();
+		$mapID = 'map'.$microtime;
 		
-		$code = '<!--thydzikGoogleMap code-->'.chr(13).
+		$code = '<!--thydzikGoogleMap-->'.chr(13);
+		if ($first) {
+			$code .= '<script type="text/javascript" src="http://www.google.com/jsapi?key='.$thydzikGoogleMap_googleMapKey.'"></script>'.chr(13).
+					 '<script type="text/javascript" src="'.get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/thydzikGoogleMap.js"></script>'.chr(13).
+					  '<script type="text/javascript">'.chr(13).
+					  '	if (window.location.href.indexOf("'.get_bloginfo('url').'") == 0) {'.chr(13).
+					  '		google.load("maps","2");'.chr(13).
+					  '	}'.chr(13).
+					  '</script>'.chr(13);
+			$first = false;
+		}
+		
+		$code .= '<div id="'.$mapID.'" style="width:0px; height:0px"></div>'.chr(13).
 				'<script type="text/javascript">'.chr(13).
-				'	var url = "'.get_bloginfo('url').'";'.chr(13).
-				'	if (window.location.href.indexOf(url) == 0) {'.chr(13).
-				"		document.write('".'<div id="'.$mapID.'" style="width:0px; height:0px"></div><script type="text/javascript">makeMap("'.$mapID.'", "'.$proxyString.rawurlencode($xml_path).'", "'.$width_val.'", "'.$height_val.'", "'.$content_path.'", "'.$markers_path.'", '.$zoom_val.');<\/script>'."');".chr(13).
+				'	if (window.location.href.indexOf("'.get_bloginfo('url').'") == 0) {'.chr(13).
+				'		makeMap("'.$mapID.'","'.$proxyString.rawurlencode($xml_path).'","'.$width_val.'", "'.$height_val.'","'.$content_path.'","'.$markers_path.'",'.$zoom_val.',"'.$type_val.'");'.chr(13).
 				'	}'.chr(13).
-				'</script>'.chr(13);
+				'</script>'.chr(13).
+				'<!--/thydzikGoogleMap-->'.chr(13);
+				
+		$val[0] = preg_quote($val[0], "/");
+		$content =  preg_replace('/'.$val[0].'/', $code, $content, 1);
 		
-		return str_ireplace($regs[0], $code , $content);
-	}
+	} //for each loop
+	return $content;
 }
 
 // stripos for php < 5
@@ -167,16 +191,20 @@ if(!function_exists('str_ireplace')) {
 	}
 }
 
+// microtime_string is used to produce a unique id
+function microtime_string() {
+	$time=microtime();
+	return trim(substr($time,11).substr($time,2,9));
+}
+
 function trim_value(&$value){ 
 	$value = trim($value); 
 }
 
 function url_exists($url) {
     // Version 4.x supported
-    $handle   = curl_init($url);
-    if (false === $handle) {
-        return false;
-    }
+    $handle = curl_init($url);
+    if (false === $handle) return false;
     curl_setopt($handle, CURLOPT_HEADER, false);
     curl_setopt($handle, CURLOPT_FAILONERROR, true);  // this works
     curl_setopt($handle, CURLOPT_NOBODY, true);
