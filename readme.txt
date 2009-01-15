@@ -36,11 +36,12 @@ thydzikGoogleMap is called in a Wordpress post by writing the following on a sin
 
 thydzikGoogleMap(example.xml, width, height, zoom, maptype)
 
-where example.xml is your xml file, and example xml file is included with thdyzikGoogleMap in the plugin directory.
-      width is the optional width parameter, if left out the default width defined in the thydzikGoogleMap options will be used.
-      height is the optional height parameter, if left out the default height defined in the thydzikGoogleMap options will be used.
-      zoom is the optional zoom level from 0 to 17 (0 being the furthest away), if left out zoom will be calculated automatically to fit all points.
-      maptype is the optional map type parameters, which can be (Normal, G_NORMAL_MAP, N), (SATELLITE, G_SATELLITE_MAP, S), (HYBRID, G_HYBRID_MAP, H), (PHYSICAL, G_PHYSICAL_MAP, P, TERRAIN or T) if left out Normal is defined.
+where:
+* example.xml is your xml file, and example xml file is included with thdyzikGoogleMap in the plugin directory.
+* width is the optional width parameter, if left out the default width defined in the thydzikGoogleMap options will be used.
+* height is the optional height parameter, if left out the default height defined in the thydzikGoogleMap options will be used.
+* zoom is the optional zoom level from 0 to 17 (0 being the furthest away), if left out zoom will be calculated automatically to fit all points.
+*       maptype is the optional map type parameters, which can be (Normal, G_NORMAL_MAP, N), (SATELLITE, G_SATELLITE_MAP, S), (HYBRID, G_HYBRID_MAP, H), (PHYSICAL, G_PHYSICAL_MAP, P, TERRAIN or T) if left out Normal is defined.
 
 width, height, zoom and maptype can be in any order and are case insensitive, all the following are valid uses:
 
