@@ -60,6 +60,7 @@ Multiple thydzikGoogleMap can be displayed in a single post.
 
 1. Under 'thydzik Google map setup' page, paste your Google maps API key
 2. In your post, write on its own line 'thydzikGoogleMap(yourxmlfile.xml)'
+2. Example.xml
 
 == Notes ==
 
