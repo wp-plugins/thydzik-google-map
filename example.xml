@@ -1,7 +1,16 @@
 <markers>
-<!-- Marker z has no html to show nonclickability-->
-<marker lat="-31.9554" lng="115.85859"  icon="z"/>
-<marker lat="-32.053128" lng="115.745869" html="Fremantle"  icon="1"/>
-<marker lat="-32.036036" lng="115.92724" html="Lynwood&lt;br&gt;Residence of the author"/>
+<!-- Marker Z has no html to show nonclickability-->
+<marker lat="-31.9554" lng="115.85859"  icon="Z" color="c89bff"/>
+<marker lat="-32.053128" lng="115.745869" html="Fremantle"  icon="1" color="6b98ff"/>
+<marker lat="-32.036036" lng="115.92724" html="Lynwood&lt;br&gt;Residence of the author" color="ffed5c"/>
+<marker lat="-31.963013" lng="115.836239" html="Kings Park" icon="KP" color="97ec7d"/>
+<marker lat="-31.956659" lng="115.869906" html="Perth Mint" icon="$" color="ffffff"/>
+<line colour="#0000FF" width="2" opacity="0.75">
+	<point lat="-32.027579" lng="115.751266" />
+	<point lat="-31.987404" lng="115.769463" />
+	<point lat="-31.957697" lng="115.852203" />
+	<point lat="-31.963814" lng="115.879326" />
+	<point lat="-32.026415" lng="115.942154" />
+</line> 
 </markers>
 

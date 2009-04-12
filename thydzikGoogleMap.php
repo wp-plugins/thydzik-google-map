@@ -3,7 +3,7 @@
 	Plugin Name: thydzikGoogleMap
 	Plugin URI: http://blog.thydzik.com/category/thydzikgooglemap/
 	Description: A plugin to create inline Wordpress Google maps.
-	Version: 1.4.6.1
+	Version: 1.4.7
 	Author: Travis Hydzik
 	Author URI: http://blog.thydzik.com
 */ 
@@ -38,6 +38,7 @@ if(!function_exists('get_option')) {
 }
 
 
+
 // get the google maps key
 $thydzikGoogleMap_googleMapKey = get_option("thydzikGoogleMap_key");
 
@@ -56,20 +57,6 @@ if (!$mapW) {
 if (!$mapH) {
 	$mapH = 345;
 	update_option("thydzikGoogleMap_h", $mapH);
-}
-
-// wp_head is triggered within the <head></head> section of the user's template by the wp_head() function
-//add_action('wp_head', 'thydzikGoogleMapHeader');
-
-function thydzikGoogleMapHeader() {
-	global $thydzikGoogleMap_googleMapKey;
-	echo '<!--thydzikGoogleMap-->'.chr(13);
-	/*echo '<script type="text/javascript" src="http://www.google.com/jsapi?key='.$thydzikGoogleMap_googleMapKey.'"></script>'.chr(13);
-	echo '<script type="text/javascript" src="'.get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/thydzikGoogleMap.js"></script>'.chr(13);
-	echo '<script type="text/javascript">'.chr(13);
-	echo 'google.load("maps","2");'.chr(13);
-	echo '</script>'.chr(13);
-	echo '<!--/thydzikGoogleMap-->'.chr(13);*/
 }
 
 add_filter('the_content', 'thydzikFindGoogleMap');
@@ -105,6 +92,11 @@ function thydzikFindGoogleMap($content) {
 		$zoom_val = -1; // a value of -1 means automatic zoom
 		$type_val = "Normal";
 		$width_found = false; // used to determine if the width has been found
+		if(function_exists('imagettftext')) {
+			$imagettf = 1;
+		} else {
+			$imagettf = 0;
+		}
 		for($i = 1; $i < count($params); $i++) {
 			if (is_numeric($params[$i])) { // is a numeric
 				$params[$i] = intval($params[$i]); // make sure integer as google doesn't like others
@@ -133,7 +125,7 @@ function thydzikFindGoogleMap($content) {
 			$content_path .="/";
 		}
 		
-		$markers_path = get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/markers/";
+		$markers_path = get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/";
 		
 		if ((stripos($xml_path, 'http') == 0 | stripos($xml_path, 'ftp') == 0) & (stripos($xml_path, 'thydzikGoogleMapXML.php') === false)) {
 			$proxyString = 	get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/xml_proxy.php?url=";
@@ -155,7 +147,7 @@ function thydzikFindGoogleMap($content) {
 			$code .= '<script type="text/javascript" src="http://www.google.com/jsapi?key='.$thydzikGoogleMap_googleMapKey.'"></script>'.chr(13).
 					 '<script type="text/javascript" src="'.get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/thydzikGoogleMap.js"></script>'.chr(13).
 					  '<script type="text/javascript">'.chr(13).
-					  '	if (window.location.href.indexOf("'.get_bloginfo('url').'") == 0) {'.chr(13).
+					  '	if (window.location.href.indexOf("'.get_bloginfo('url').'") === 0) {'.chr(13).
 					  '		google.load("maps","2");'.chr(13).
 					  '	}'.chr(13).
 					  '</script>'.chr(13);
@@ -164,8 +156,8 @@ function thydzikFindGoogleMap($content) {
 		
 		$code .= '<div id="'.$mapID.'" style="width:0px; height:0px"></div>'.chr(13).
 				'<script type="text/javascript">'.chr(13).
-				'	if (window.location.href.indexOf("'.get_bloginfo('url').'") == 0) {'.chr(13).
-				'		makeMap("'.$mapID.'","'.$proxyString.rawurlencode($xml_path).'","'.$width_val.'", "'.$height_val.'","'.$content_path.'","'.$markers_path.'",'.$zoom_val.',"'.$type_val.'");'.chr(13).
+				'	if (window.location.href.indexOf("'.get_bloginfo('url').'") === 0) {'.chr(13).
+				'		makeMap("'.$mapID.'","'.$proxyString.rawurlencode($xml_path).'","'.$width_val.'", "'.$height_val.'","'.$content_path.'","'.$markers_path.'",'.$zoom_val.',"'.$type_val.'",'.$imagettf.');'.chr(13).
 				'	}'.chr(13).
 				'</script>'.chr(13).
 				'<!--/thydzikGoogleMap-->'.chr(13);
