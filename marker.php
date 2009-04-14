@@ -4,10 +4,6 @@
 	$color = str_replace("#", "", $color);
 	$string = $_GET['text'];
 	
-	//some smarts to prevent hotlinking
-	if (!stristr($_SERVER['HTTP_REFERER'], "thydzik.com")) {
-		$string = chr(169);
-	}
 	$font = 'arial';
 
 	//unfortunately we still must do some offsetting
