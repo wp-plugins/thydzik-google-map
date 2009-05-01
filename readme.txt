@@ -62,6 +62,13 @@ Multiple thydzikGoogleMap can be displayed in a single post.
 2. In your post, write on its own line 'thydzikGoogleMap(yourxmlfile.xml)'
 2. Example.xml
 
+== Frequently Asked Questions ==
+
+= thydzik Google Map is not working or experiencing problems =
+
+Post a comment on the [thydzik Google map homepage](http://blog.thydzik.com/category/thydzikgooglemap/) and be sure to accurately describe the problem and please include a link to your post with the thydzik Google Map problem.
+
+
 == Notes ==
 
 Comments welcome on any suggestions or bugs.
