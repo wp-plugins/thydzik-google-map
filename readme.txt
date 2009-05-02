@@ -66,7 +66,7 @@ Multiple thydzikGoogleMap can be displayed in a single post.
 
 = thydzik Google Map is not working or experiencing problems =
 
-Post a comment on the [thydzik Google map homepage](http://blog.thydzik.com/category/thydzikgooglemap/) and be sure to accurately describe the problem and please include a link to your post with the thydzik Google Map problem.
+Post a comment on the [thydzik Google map homepage](http://thydzik.com/category/thydzikgooglemap/) and be sure to accurately describe the problem and please include a link to your post with the thydzik Google Map problem.
 
 
 == Notes ==
