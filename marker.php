@@ -4,7 +4,7 @@
 	$color = str_replace("#", "", $color);
 	$string = $_GET['text'];
 	
-	$font = 'arial';
+	$font = realpath('arial.ttf');
 
 	//unfortunately we still must do some offsetting
 	switch (ord(substr($string,0,1))) {
