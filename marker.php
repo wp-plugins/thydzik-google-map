@@ -45,7 +45,19 @@
 	$height = $bbox[1] - $bbox[7] + 1;
 
 	$image_name = "http://chart.apis.google.com/chart?cht=mm&chs=20x34&chco=$color,$color,000000&ext=.png";
-	$im = imagecreatefrompng($image_name);
+	
+	$ch = curl_init();
+	curl_setopt ($ch, CURLOPT_URL, $image_name);
+	curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 0);
+	
+	// Getting binary data
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+	
+	$image_string = curl_exec($ch);
+	curl_close($ch);
+	
+	$im = imagecreatefromstring ($image_string);
 	imageAlphaBlending($im, true);
 	imageSaveAlpha($im, true);
 	$black = imagecolorallocate($im, 0, 0, 0);
