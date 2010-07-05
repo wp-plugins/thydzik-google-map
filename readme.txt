@@ -1,10 +1,10 @@
 === thydzikGoogleMap ===
 Contributors: thydzik
 Homepage link: http://thydzik.com/category/thydzikgooglemap/
-Tags: Google, Google Maps, plugin, thydzikGoogleMap, Wordpress
+Tags: Google, Google Maps, plugin, thydzikGoogleMap, Wordpress, thydzik-google-map
 Requires at least: 2.3.2
-Tested up to: 2.9.1
-Stable tag: 1.4.8
+Tested up to: 3.0
+Stable tag: 1.5
 
 thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your Wordpress posts.
 
@@ -13,12 +13,10 @@ thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your W
 thydzikGoogleMap is a Wordpress plugin that creates inline Google maps in your Wordpress posts. There are many advantages over other existing Google maps plugins and they are:
 
    1. Ease of use, to create a Google map simply type thydzikGoogleMap(mapdata.xml) in your post on its own line.
-   1. uses XML map data, this allows for maximum configurability, and supports multiple points,lines, coloured and numbered markers.
+   1. uses XML map data, this allows for maximum configurability, and supports multiple points,lines, coloured and numbered markers, links, etc.
    1. supports cross-domain XML files by using a PHP proxy.
-   1. Google Map width, height, zoom and type is all individually configurable.
+   1. Google Map width, height, zoom and map type are all individually configurable.
    1. thydzikGoogleMap produces valide XHTML.
-
-Note: with versions above 1.1,  the plugin folder is renamed to thydzik-google-map, upgrading users will need to delete the old folder and install the plugin as per the installation.
 
 [Oficial Homepage](http://thydzik.com/category/thydzikgooglemap/) (with lots of working examples)
 
@@ -46,7 +44,7 @@ where:
 
 width, height, zoom and maptype can be in any order and are case insensitive, all the following are valid uses:
 
-* thydzikGoogleMap(example.xml)
+* thydzikgooglemap(example.xml)
 * thydzikGoogleMap(example.xml, 5)
 * thydzikgooglemap(example.xml, 4, S)
 * tHyDzIkGoOgLeMaP(example.xml,hYbRiD,450,225)
