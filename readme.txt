@@ -2,21 +2,20 @@
 Contributors: thydzik
 Homepage link: http://thydzik.com/category/thydzikgooglemap/
 Tags: Google, Google Maps, plugin, thydzikGoogleMap, WordPress, thydzik-google-map
-Requires at least: 2.3.2
-Tested up to: 3.0
-Stable tag: 1.5.1
+Requires at least: 2.8
+Tested up to: 3.1
+Stable tag: 2.0
 
 thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your WordPress posts.
-
-== Description ==
+== Description ==Rewritten code supporting latest WordPress and Google Map API v3 features!
 
 thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your WordPress posts. With advantages over other existing Google maps plugins being;
 
    1. Ease of use, to create a Google map simply type 'thydzikGoogleMap(mapdata.xml)' (case insensitive) in your post on its own line.
-   1. Uses XML map data, this allows for maximum configurability, and supports multiple points, lines, coloured and numbered markers, links, etc.
+   1. Uses XML map data, this allows for maximum configurability, and supports multiple coloured and numbers makers and polylines. Info windows can contain html.
    1. Supports cross-domain XML files by using a PHP proxy (your XML file can be anywhere).
    1. Google Map width, height, zoom and map type are all individually configurable.
-   1. thydzikGoogleMap produces valid XHTML.
+   1. Allow readers to download gpx files which can be uploaded to GPS for easy navigation.   1. Google Maps API v3, no key required.
 
 [Official  Homepage](http://thydzik.com/category/thydzikgooglemap/) (with lots of working examples)
 
@@ -31,7 +30,7 @@ thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your W
 
 thydzikGoogleMap is called in a WordPress post by writing the following on a single line where you want the Google Map to appear:
 
-thydzikGoogleMap(example.xml, width, height, zoom, maptype)
+thydzikGoogleMap(example.xml, width, height, zoom, maptype, gpx)
 
 where:
 
@@ -40,13 +39,13 @@ where:
 * height is the optional height parameter, if left out the default height defined in the thydzikGoogleMap options will be used.
 * zoom is the optional zoom level from 0 to 17 (0 being the furthest away), if left out zoom will be calculated automatically to fit all points.
 * maptype is the optional map type parameters, which can be (Normal, G_NORMAL_MAP, N), (SATELLITE, G_SATELLITE_MAP, S), (HYBRID, G_HYBRID_MAP, H), (PHYSICAL, G_PHYSICAL_MAP, P, TERRAIN or T) if left out Normal is defined.
-
-width, height, zoom and maptype can be in any order and are case insensitive, all the following are valid uses:
+* gpx is the optional parmeter to show a icon on the map to allow gpx file download, the parameter can be gpx, d or download.
+width, height, zoom, maptype, gpx can be in any order and are case insensitive, all the following are valid uses:
 
 * thydzikgooglemap(example.xml)
-* thydzikGoogleMap(example.xml, 5)
-* thydzikgooglemap(example.xml, 4, S)
-* tHyDzIkGoOgLeMaP(example.xml,hYbRiD,450,225)
+* thydzikGoogleMap(example.xml, 5, gpx)
+* thydzikgooglemap(example.xml, 4, S, download)
+* tHyDzIkGoOgLeMaP(example.xml,hYbRiD,450,225, gpx)
 * thydzikGoogleMap(example.xml, TERRAIN)
 * thydzikGoogleMap(example.xml, 640, 480)
 
@@ -55,7 +54,7 @@ Multiple thydzikGoogleMap can be displayed in a single post.
 
 == Screenshots ==
 
-1. Under 'thydzik Google map setup' page, paste your Google maps API key
+1. Simple configuration page
 1. In your post, write on its own line 'thydzikGoogleMap(yourxmlfile.xml)'
 1. Example.xml
 

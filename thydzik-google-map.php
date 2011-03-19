@@ -3,11 +3,11 @@
 	Plugin Name: thydzik Google Map
 	Plugin URI: http://thydzik.com/category/thydzikgooglemap/
 	Description: A plugin to create inline WordPress Google maps.
-	Version: 1.5.1
+	Version: 2.0
 	Author: Travis Hydzik
 	Author URI: http://thydzik.com
 */ 
-/*  Copyright 2010 Travis Hydzik (mail@thydzik.com)
+/*  Copyright 2011 Travis Hydzik (mail@thydzik.com)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,12 +24,154 @@
 
 */
 
+function utcdate() {
+	return gmdate("Y-m-d\Th:i:s\Z");
+}
+
+$u = $_GET['u'];
+$d = $_GET['d'];
+$de_u =  base64_decode($u);
+$u_parts = pathinfo($de_u);
+if ($u_parts['extension'] == "xml") {
+	$session = curl_init($de_u);
+	curl_setopt($session, CURLOPT_HEADER, false);
+	curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+	$ret = curl_exec($session);
+	curl_close($session);
+
+	if ($d) {
+		if ($d=="gpx") {//create a gpx file
+			header("Content-disposition: attachment; filename=".$u_parts['filename'].".gpx");
+			ob_clean();
+			flush();
+		}
+
+		header("Content-Type: text/xml");
+		$ret = eregi_replace(">"."[[:space:]]+"."< ",">< ",$ret);
+		
+		$i_markers = 0;
+		$i_lines = 0;
+		$i_points = 0;
+		
+		$ref = $_SERVER['HTTP_REFERER'];
+		
+		echo 	"<?xml version='1.0' encoding='UTF-8'?>".
+				"<gpx\r\n".
+				"version='1.0'\r\n".
+				"creator='thydzik Google Map - http://thydzik.com/category/thydzikgooglemap/'\r\n".
+				"xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'\r\n".
+				"xmlns='http://www.topografix.com/GPX/1/0'\r\n".
+				"xsi:schemaLocation='http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd'>\r\n";
+		echo 	"<time>".utcdate()."</time>";
+		
+		function start_tag($parser, $name, $attribs) {
+			global $i_markers;
+			global $i_lines;
+			global $i_points;
+			switch($name) {
+				case "MARKER";
+					$html = "";
+					if (is_array($attribs)) {
+						while(list($key,$val) = each($attribs)) {
+							switch($key) {
+								case "LAT";
+									$lat = $val;
+								break;
+								case "LNG";
+									$lng = $val;
+								break;
+								case "ICON";
+									$label = htmlspecialchars($val);
+								break;
+								case "HTML";
+									$html = htmlspecialchars($val);
+								break;
+							}
+						}
+						if ($lat && $lng) {
+							if (!$label || ($label == "Marker.php")) {
+								$label = str_pad(++$i_markers, 3, "0", STR_PAD_LEFT);
+							}
+							echo "<wpt lat='{$lat}' lon='{$lng}'>";
+							echo "<time>".utcdate()."</time>";
+							echo "<name>{$label}</name>";
+							echo "<desc>{$html}</desc>";
+							if ($ref) {
+								echo "<url>$ref</url>";
+							}
+							echo "<sym>Waypoint</sym>";
+							echo "</wpt>";
+						}
+					}
+					break;
+				case "LINE";
+					echo "<trk>";
+					echo "<name>LINE ".++$i_lines.": 08 FEB 2011 11:28</name>";
+					echo "<trkseg>";
+					break;
+				case "POINTS";
+					echo "<trk>";
+					echo "<name>POINTS ".++$i_points.": 08 FEB 2011 11:28</name>";
+					echo "<trkseg>";
+					break;
+				case "POINT";
+					if (is_array($attribs)) {
+						while(list($key,$val) = each($attribs)) {
+							switch($key) {
+								case "LAT";
+									$lat = $val;
+								break;
+								case "LNG";
+									$lng = $val;
+								break;
+							}
+						}
+						if ($lat && $lng) {
+							echo "<trkpt lat='{$lat}' lon='{$lng}'>";
+							echo "<time>".utcdate()."</time>";
+							echo "</trkpt>";
+						}
+					}
+					break;
+			}
+		} 
+		function end_tag($parser, $name) {
+			switch($name) {
+				case "MARKER";
+					break;
+				case "LINE";
+				case "POINTS";
+					echo "</trkseg>";
+					echo "</trk>";
+			}
+		} 
+	
+		function tag_contents($parser, $data) {
+		}
+	
+	
+		if ($xmlparser = xml_parser_create()) {
+			
+			xml_set_element_handler($xmlparser, "start_tag", "end_tag");
+			xml_set_character_data_handler($xmlparser, "tag_contents");
+			xml_parse($xmlparser, $ret);
+		}
+		
+		echo "</gpx>";
+	} else {
+		header("Content-Type: text/xml");
+		echo $ret;
+	}
+	exit;
+}
+
+
 //lets create some nice output for our google bots.
-if(!function_exists('get_option')) {
+if(!function_exists("get_option")) {
 	$host = $_SERVER['HTTP_HOST'];
 	//function does not exist so not being run from wordpress
-	echo '<a href="http://'.$host.'" target="_self">'.$host.'</a> are proudly using the <a href="http://wordpress.org" target="_blank">Wordpress</a> plugin <a href="http://thydzik.com/category/thydzikgooglemap/" target="_blank">thydzikgooglemap</a> to display inline Google maps on their blog.';
-
+	header("Content-Type: text/html; charset=UTF-8");
+	echo "<!doctype html><html><head><title>thydzik-Google-Map</title></head><body><a href='http://{$host}' target='_self'>{$host}</a> are proudly using the <a href='http://wordpress.org' target='_blank'>WordPress</a> plugin <a href='http://thydzik.com/category/thydzikgooglemap/' target='_blank'>thydzik-google-map</a> to display inline Google maps.</body></html>";
 	//create dummy function
 	function get_option($s) {
 		return $s;
@@ -37,261 +179,156 @@ if(!function_exists('get_option')) {
 	exit;
 }
 
-
-
-// get the google maps key
-$thydzikgooglemap_googleMapKey = get_option("thydzikgooglemap_key");
-
-//define global variable first
-$first = true;
-
-// get the map width and height
-$mapW = get_option("thydzikgooglemap_w");
-$mapH = get_option("thydzikgooglemap_h");
+//load the scripts
+function tgm_init() {
+    if (!is_admin()) {
+        wp_deregister_script("jquery");
+        wp_register_script("jquery", "http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js");
+        wp_enqueue_script("jquery");
+		wp_register_script("google-maps", "http://maps.google.com/maps/api/js?sensor=false");
+		wp_enqueue_script("google-maps");
+		wp_register_script("thydzik-google-map", plugins_url("thydzik-google-map.js",__FILE__), array("jquery", "google-maps"));
+		wp_enqueue_script("thydzik-google-map" );
+    }
+}    
+ 
+add_action('init', 'tgm_init');
 
 //if the width or height is empty set defaults.
-if (!$mapW) {
-	$mapW = 450;
-	update_option("thydzikgooglemap_w", $mapW);
+if (!get_option("thydzikgooglemap_w")) {
+	update_option("thydzikgooglemap_w", 450);
 }
-if (!$mapH) {
-	$mapH = 345;
-	update_option("thydzikgooglemap_h", $mapH);
+if (!get_option("thydzikgooglemap_h")) {
+	update_option("thydzikgooglemap_h", 345);
 }
 
-add_filter('the_content', 'thydzikFindGoogleMap');
+add_filter('the_content', 'tgm_find');
 
-function thydzikFindGoogleMap($content) {
-	global $thydzikgooglemap_googleMapKey;
-	global $first;
-	global $mapW;
-	global $mapH;
-
-	preg_match_all("/<p>\s*thydzikgooglemap\(([^<]*)\)\s*<\/p>/i", $content, $regs, PREG_SET_ORDER);
-	
-	foreach ($regs as $val) {
-		//split the parameters and trim any spaces
-		$params = split(',', $val[1]);
-		array_walk($params, 'trim_value');
-		
-		//assume the first parameters is always the xml file
-		$xml_path = $params[0];
-		$parsed = parse_url($xml_path);
-		if (!$parsed['scheme']) {
-			$xml_path = get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/'.$xml_path;
-		}
-		if (!url_exists($xml_path)) { //check file exists
-			return $content; //exit with no change if file doesn't exist
-		} //if (!url_exists($xml_path))
-		
-		//process any other parameters
-		//assume width is always before height, zoom is always < 18
-		
-		//set defaults first
-		$width_val = $mapW."px";
-		$height_val = $mapH."px";
-		$zoom_val = -1; // a value of -1 means automatic zoom
-		$type_val = "Normal";
-		$width_found = false; // used to determine if the width has been found
-		if(function_exists('imagettftext')) {
-			$imagettf = 1;
-		} else {
-			$imagettf = 0;
-		}
-		for($i = 1; $i < count($params); $i++) {
-			if (is_numeric($params[$i])) { // is a numeric
-				$params[$i] = intval($params[$i]); // make sure integer as google doesn't like others
-				if ($params[$i] <= 17) { // a zoom level
-					$zoom_val = $params[$i];
-				} else {
-					if ($width_found) { //assume a height
-						$height_val = $params[$i]."px";
-					} else { //assume a width
-						$width_val = $params[$i]."px";
-						$width_found = true;
-					}
-				}
-			} else { // a string
-				$params[$i] = strtoupper($params[$i]);
-				if (in_array($params[$i], array("NORMAL", "G_NORMAL_MAP", "N", "SATELLITE", "G_SATELLITE_MAP", "S", "HYBRID", "G_HYBRID_MAP", "H", "PHYSICAL", "G_PHYSICAL_MAP", "P", "TERRAIN", "T"))) {// must be a map type parameter
-					$type_val = $params[$i];
-				}
-				
-			}
-		} //for loop
-
-		$path_parts = pathinfo($xml_path);
-		$content_path = $path_parts['dirname'];
-		if ($content_path) {
-			$content_path .="/";
-		}
-		
-		$markers_path = get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/";
-		
-		if ((stripos($xml_path, 'http') == 0 | stripos($xml_path, 'ftp') == 0) & (stripos($xml_path, 'thydzikgooglemapXML.php') === false)) {
-			$proxyString = 	get_bloginfo('wpurl')."/wp-content/plugins/thydzik-google-map/xml-proxy.php?url=";
-			$path_parts = pathinfo($xml_path);
-			$content_path = $path_parts['dirname'];
-			if ($content_path) {
-				$content_path .="/";
-			}
-		} else {
-			$proxyString = "";
-			$content_path = "";
-		}
-		
-		$microtime = microtime_string();
-		$mapID = 'map'.$microtime;
-		
-		$code = '<!--thydzikgooglemap-->'.chr(13);
-		if ($first) {
-			$code .= '<script type="text/javascript" src="http://www.google.com/jsapi?key='.$thydzikgooglemap_googleMapKey.'"></script>'.chr(13).
-					 '<script type="text/javascript" src="'.get_bloginfo('wpurl').'/wp-content/plugins/thydzik-google-map/thydzik-google-map.js"></script>'.chr(13).
-					  '<script type="text/javascript">'.chr(13).
-					  '	if (window.location.href.indexOf("'.get_bloginfo('url').'") === 0) {'.chr(13).
-					  '		google.load("maps","2");'.chr(13).
-					  '	}'.chr(13).
-					  '</script>'.chr(13);
-			$first = false;
-		}
-		
-		
-		$code .= '<div id="'.$mapID.'" style="width:0px; height:0px"></div>'.chr(13).
-				'<script type="text/javascript">'.chr(13).
-				'	if (window.location.href.indexOf("'.get_bloginfo('url').'") === 0) {'.chr(13).
-				'		makeMap("'.$mapID.'","'.$proxyString.strhex(linencrypt($xml_path)).'","'.$width_val.'", "'.$height_val.'","'.$content_path.'","'.$markers_path.'",'.$zoom_val.',"'.$type_val.'",'.$imagettf.');'.chr(13).
-				'	}'.chr(13).
-				'</script>'.chr(13).
-				'<!--/thydzikgooglemap-->'.chr(13);
-				
-		$val[0] = preg_quote($val[0], "/");
-		$content =  preg_replace('/'.$val[0].'/', $code, $content, 1);
-		
-	} //for each loop
-	return $content;
-}
-
-// stripos for php < 5
-if (!function_exists("stripos")) {
-	function stripos($haystack, $needle, $offset=0){
-		return strpos(strtolower($haystack), strtolower($needle), $offset);
-	}
-}
-// str_ireplace for php < 5
-if(!function_exists('str_ireplace')) {
-	function str_ireplace($search, $replace, $subject) {
-		$search = preg_quote($search, "/");
-		return preg_replace("/".$search."/i", $replace, $subject);
-	}
-}
-
-// microtime_string is used to produce a unique id
-function microtime_string() {
-	$time=microtime();
-	return trim(substr($time,11).substr($time,2,9));
-}
-
-function trim_value(&$value){ 
+function tgm_trim_value(&$value){ 
 	$value = trim($value); 
 }
 
-function url_exists($url) {
-    // Version 4.x supported
-    $handle = curl_init($url);
-    if (false === $handle) return false;
-    curl_setopt($handle, CURLOPT_HEADER, false);
-    curl_setopt($handle, CURLOPT_FAILONERROR, true);  // this works
-    curl_setopt($handle, CURLOPT_NOBODY, true);
-    curl_setopt($handle, CURLOPT_RETURNTRANSFER, false);
-    $connectable = curl_exec($handle);
-    curl_close($handle);   
-    return $connectable;
+function tgm_find($content) {
+	preg_match_all("/(?:<p>|(?:\r\n|\n\r|\r|\n))\s*thydzikgooglemap\(([^<]*)\)\s*(?:<\/\s*p>|<br\s*\/>)/i", $content, $regs, PREG_SET_ORDER);
+	foreach ($regs as $val) {
+		//split the parameters and trim any spaces
+		$params = split(',', $val[1]);
+
+		array_walk($params, 'tgm_trim_value');
+
+		//assume the first parameters is always the xml file
+		$xml_path = $params[0];
+		$xml_path_parts = pathinfo($xml_path);
+		if ($xml_path_parts['basename']==$xml_path) {
+			$xml_path = plugins_url($xml_path,__FILE__);
+		}
+		$session = curl_init($xml_path);
+		curl_setopt($session, CURLOPT_NOBODY, true);
+		curl_exec($session);
+		$ret = curl_getinfo($session, CURLINFO_HTTP_CODE);
+		curl_close($session);
+		if ($ret == 200) { //the file is accessable
+			//process any other parameters
+			//assume width is always before height, zoom is always < 18
+
+			//set defaults first
+			$width_val = get_option("thydzikgooglemap_w");
+			$height_val = get_option("thydzikgooglemap_h");
+			if (get_option("thydzikgooglemap_gpx") == "checked") {
+				$gpx_val = 1;
+			} else {
+				$gpx_val = 0;
+			}
+			$zoom_val = -1; // a value of -1 means automatic zoom
+			$type_val = "ROADMAP";
+			$width_found = false; // used to determine if the width has been found
+			
+			foreach(array_slice($params,1) as $param) {
+				if (is_numeric($param)) { // is a numeric
+					$param = intval($param); // make sure integer as google doesn't like others
+					if ($param < 18) { // a zoom level
+						$zoom_val = $param;
+					} else {
+						if ($width_found) { //assume a height
+							$height_val = $param;
+						} else { //assume a width
+							$width_val = $param;
+							$width_found = true;
+						}
+					}
+				} else { // a string
+					$param = strtoupper($param);
+					if (in_array($param, array("NORMAL","G_NORMAL_MAP","N","ROADMAP","R"))) {
+						$type_val = "ROADMAP";
+					} else if (in_array($param, array("SATELLITE","G_SATELLITE_MAP","S"))) {
+						$type_val = "SATELLITE";
+					} else if (in_array($param, array("HYBRID","G_HYBRID_MAP","H"))) {
+						$type_val = "HYBRID";
+					} else if (in_array($param, array("PHYSICAL","G_PHYSICAL_MAP","P","TERRAIN","T"))) {
+						$type_val = "TERRAIN";
+					} else if (in_array($param, array("GPX","D","DOWNLOAD"))) {
+						$gpx_val = 1;
+					}
+				}
+			}
+
+			$rnd = rand();
+			$en_xml_path = plugins_url(basename(__FILE__),__FILE__)."?u=".base64_encode($xml_path);
+			$code = "<!--thydzikgooglemap-->\r\n".
+					"<div id='map{$rnd}' style='width: {$width_val}px; height: {$height_val}px'></div>\r\n".
+					"<script type='text/javascript'>\r\n".
+					"google.maps.event.addDomListener(window,'load', function() {thydzikgm('map{$rnd}','{$en_xml_path}','{$xml_path}',{$zoom_val},'{$type_val}',{$gpx_val});});\r\n".
+					"</script>\r\n".
+					"<!--/thydzikgooglemap-->\r\n";
+
+			$val[0] = preg_quote($val[0], "/");
+			$content =  preg_replace('/'.$val[0].'/', $code, $content, 1);
+		}
+	}
+	return $content;
 }
 
-//Wordpress converts straight apostrophes to curved, which javascript doesn't like
-function convert_smart_quotes($string) {
-    $search = array('&#8216;', 
-                    '&#8217;',
-					'&#8220;',
-					'&#8221;'); 
-    $replace = array(chr(39), 
-                     chr(39),
-					 chr(34),
-					 chr(34)); 
-    return str_replace($search, $replace, $string); 
-} 
-
-//some new functions to better decode the url, tho makes it harder to debug
-function linencrypt($pass) {
-	$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB); //get vector size on ECB mode 
-	$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND); //Creating the vector
-	$cryptedpass = mcrypt_encrypt (MCRYPT_RIJNDAEL_256, "nYj4mJXeU1MPzAuwlzodiH", $pass, MCRYPT_MODE_ECB, $iv); //Encrypting using MCRYPT_RIJNDAEL_256 algorithm 
-	return $cryptedpass;
+function tgm_admin_menu() {
+	if (function_exists("add_submenu_page")) {
+		add_submenu_page("plugins.php", "thydzik Google Map","thydzik Google Map", 10, basename(__FILE__), "tgm_submenu_page");
+	}
 }
 
-function strhex($string) {
-	$hexstr = unpack('H*', $string);
-	return array_shift($hexstr);
-}
-
-//admin panel
-function thydzikgooglemap_adminPanel() {
-	if ( function_exists('add_submenu_page') )
-		add_submenu_page('plugins.php', 'thydzik Google Map','thydzik Google Map', 10, basename(__FILE__), 'thydzikgooglemap_subPanel');
-
-}
-
-function thydzikgooglemap_subPanel() {
-	global $thydzikgooglemap_googleMapKey;
-	global $mapW;
-	global $mapH;
-
-	echo <<<EOF
-	<div class="wrap">
-	<h2>thydzik Google Map setup</h2>
-EOF;
-
+function tgm_submenu_page() {
+	echo "<div class='wrap'><h2>thydzik Google Map Options</h2>";
 	if($_POST['action'] == "save") {
-		echo  '<div id="message" class="updated fade"><p>thydzik Google map updated.</p></div>';
-		//updating stuff..
-		update_option("thydzikgooglemap_key", $_POST["map_key"]);
-		update_option("thydzikgooglemap_w", $_POST["map_w"]);
-		update_option("thydzikgooglemap_h", $_POST["map_h"]);
-		$thydzikgooglemapkey = get_option("thydzikgooglemap_key");
-		$mapW = get_option("thydzikgooglemap_w");
-		$mapH = get_option("thydzikgooglemap_h");	
+		echo  "<div id='message' class='updated fade'><p>thydzik Google Map Options Updated.</p></div>";
+		update_option("thydzikgooglemap_w", $_POST["tgm_w"]);
+		update_option("thydzikgooglemap_h", $_POST["tgm_h"]);
+		
+		if ($_POST["tgm_gpx"]) {
+			update_option("thydzikgooglemap_gpx", 'checked');
+		} else {
+			update_option("thydzikgooglemap_gpx", '');
+		}
 	}
 	
-	echo <<<EOF
-	<form name="form" method="post">
-	Google Map API Key: <input type="text" name="map_key" size="135" value="{$thydzikgooglemap_googleMapKey}"><br>
-	<a href="http://code.google.com/apis/maps/signup.html" target="_blank">Sign Up for the Google Maps API Key</a>
-	<p>
-	<table border="0">
-		<tr>
-			<td>Default map width:</td>
-			<td><input type="text" size="4" name="map_w" value="{$mapW}"> pixels</td>
-		</tr>
-		<tr>
-			<td>Default map height:</td>
-			<td><input type="text" size="4" name="map_h" value="{$mapH}"> pixels</td>
-		</tr>
-	</table>
-
-	<p class="submit">
-		<input type="hidden" name="action" value="save">
-		<input type="submit" name="submit" value="Update options &raquo;">
-	</p>
-	
-	</form>
-	
-	</div>
-EOF;
+	echo 	"<form name='form' method='post'><p>\r\n".
+			"<table border='0'>\r\n".
+			"<tr>\r\n".
+			"	<td>Default map width:</td>\r\n".
+			"	<td><input type='text' size='4' name='tgm_w' value='".get_option("thydzikgooglemap_w")."'> pixels</td>\r\n".
+			"</tr>\r\n".
+			"<tr>\r\n".
+			"	<td>Default map height:</td>\r\n".
+			"	<td><input type='text' size='4' name='tgm_h' value='".get_option("thydzikgooglemap_h")."'> pixels</td>\r\n".
+			"</tr>\r\n".
+			"<tr>\r\n".
+			"	<td>Enable gpx file download:</td>\r\n".
+			"	<td><input type='checkbox' name='tgm_gpx' value='anyvalue' ".get_option("thydzikgooglemap_gpx")."></td>\r\n".
+			"</tr>\r\n".
+			"</table>\r\n".
+			"<p class='submit'>\r\n".
+			"	<input type='hidden' name='action' value='save'>\r\n".
+			"	<input type='submit' name='submit' value='Update options &raquo;'>\r\n".
+			"</p></form></div>";
 }
 
 // admin hooks
-add_action('admin_menu', 'thydzikgooglemap_adminPanel');
-
-
-
+add_action("admin_menu", "tgm_admin_menu");
 ?>

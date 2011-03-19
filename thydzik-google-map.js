@@ -1,1 +1,120 @@
-function makeMap(idname,xmlname,awidth,aheight,datafolder,markersfolder,azoom,maptype,freetype){if(GBrowserIsCompatible()){var gmarkers=[];var imarkers=0;var m=document.getElementById(idname);m.style.width=awidth;m.style.height=aheight;var icons=[];icons[""]=new GIcon(G_DEFAULT_ICON);if(freetype){icons[""].image=markersfolder+"marker.php?x=.png";}function numberedIcon(text,color){if(freetype){if(!text){text=color;}if(!icons[text]){var icon=new GIcon(icons[""]);icon.image=markersfolder+"marker.php?color="+color+"&text="+text+"&x=.png";icons[text]=icon;}}else{if(("A"<=text)&&(text<="Z")){if(!icons[text]){icon=new GIcon(icons[""]);icon.image="http://www.google.com/mapfiles/marker"+text+".png";icons[text]=icon;}}else{return icons[""];}}return icons[text];}function createMarker(point,html,icon,color){var marker=new GMarker(point);if(html){var markerOptions={icon:numberedIcon(icon,color),clickable:true};}else{markerOptions={icon:numberedIcon(icon,color),clickable:false};}marker=new GMarker(point,markerOptions);GEvent.addListener(marker,"click",function(){marker.openInfoWindowHtml(html);});gmarkers[imarkers]=marker;imarkers++;return marker;}var map=new GMap2(document.getElementById(idname));map.addControl(new GSmallMapControl());map.addControl(new GMapTypeControl());map.setCenter(new GLatLng(0,0),0);map.addMapType(G_PHYSICAL_MAP);map.removeMapType(G_HYBRID_MAP);amaptype=maptype.toUpperCase();if(amaptype=="NORMAL"||amaptype=="G_NORMAL_MAP"||amaptype=="N"){map.setMapType(G_NORMAL_MAP);}else if(amaptype=="SATELLITE"||amaptype=="G_SATELLITE_MAP"||amaptype=="S"){map.setMapType(G_SATELLITE_MAP);}else if(amaptype=="HYBRID"||amaptype=="G_HYBRID_MAP"||amaptype=="H"){map.setMapType(G_HYBRID_MAP);}else if(amaptype=="PHYSICAL"||amaptype=="G_PHYSICAL_MAP"||amaptype=="P"||amaptype=="TERRAIN"||amaptype=="T"){map.setMapType(G_PHYSICAL_MAP);}else{map.setMapType(G_NORMAL_MAP);}var bounds=new GLatLngBounds();GDownloadUrl(xmlname,function(doc,responseCode){if(responseCode==200){var xmlDoc=GXml.parse(doc);var markers=xmlDoc.documentElement.getElementsByTagName("marker");for(var i=0;i<markers.length;i++){var lat=markers[i].getAttribute("lat");var lng=markers[i].getAttribute("lng");if(lat&&lng){var point=new GLatLng(parseFloat(lat),parseFloat(lng));var html=markers[i].getAttribute("html");if(html){html=html.replace(html.match(/href='(?!(http|ftp))/ig),"href='".concat(datafolder));html=html.replace(html.match(/href="(?!(http|ftp))/ig),'href="'.concat(datafolder));html=html.replace(html.match(/src='(?!(http|ftp))/ig),"src='".concat(datafolder));html=html.replace(html.match(/src="(?!(http|ftp))/ig),'src="'.concat(datafolder));}var icon=markers[i].getAttribute("icon");if(!icon){icon="";}else{if(!freetype){icon=icon.toUpperCase();}}var colour=markers[i].getAttribute("colour");if(!colour){colour=markers[i].getAttribute("color");}if(!colour){colour="";}var marker=createMarker(point,html,icon,colour);map.addOverlay(marker);bounds.extend(point);}}var inputs=[];inputs=inputs.concat(xmlDoc.documentElement.getElementsByTagName("line"));inputs=inputs.concat(xmlDoc.documentElement.getElementsByTagName("points"));var lines="";for(i=0;i<2;i++){lines=inputs[i];for(var j=0;j<lines.length;j++){colour=lines[j].getAttribute("colour");if(!colour){colour=lines[j].getAttribute("color");}if(!colour){colour="#0000ff";}var width=lines[j].getAttribute("width");if(!width){width="4";}width=parseFloat(width);var opacity=lines[j].getAttribute("opacity");if(!opacity){opacity="0.75";}opacity=parseFloat(opacity);var points=lines[j].getElementsByTagName("point");var pts=[];for(var k=0;k<points.length;k++){pts[k]=new GLatLng(parseFloat(points[k].getAttribute("lat")),parseFloat(points[k].getAttribute("lng")));bounds.extend(pts[k]);}map.addOverlay(new GPolyline(pts,colour,width,opacity));}}if(azoom==-1){map.setZoom(map.getBoundsZoomLevel(bounds));}else{map.setZoom(azoom);}map.setCenter(bounds.getCenter());}else if(responseCode==-1){}else{}});}}
+function thydzikgm(devid, en_xml, xml, zoom, type, gpx) {
+	var bounds = new google.maps.LatLngBounds();
+
+	var map = new google.maps.Map(document.getElementById(devid));
+	eval("map.setMapTypeId(google.maps.MapTypeId."+type+")");
+	
+	function gpx_link() {
+		var cont = document.createElement('div');
+		cont.style.marginRight ="5px";
+		
+		var div = document.createElement('div');
+		div.style.width = '50px';
+		div.style.height = '21px';
+		div.style.backgroundColor = '#fcfcfc';
+		div.style.borderStyle = 'solid';
+		div.style.borderWidth = '1px';
+		div.style.borderColor = "#678ac7";
+		cont.appendChild(div);
+		
+		var atag = document.createElement('a');
+		atag.href = en_xml+"&d=gpx";
+		div.appendChild(atag);
+
+		var img = document.createElement('img');
+		img.src= "https://chart.googleapis.com/chart?chst=d_simple_text_icon_left&chld=gpx|14|000|mobile|16|000|FFF&.png";
+		img.alt = "gpx";
+		img.title = "Download gpx file!";
+		img.style.display = "block";
+		img.style.marginTop ="2px";
+		img.style.marginLeft ="2px";
+		img.style.borderStyle = 'none';
+		atag.appendChild(img);
+		
+		return cont;
+	}
+	
+	if (gpx) {
+		map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(gpx_link());
+	}
+	
+	var icons = []; //initiate array of icons
+	var infowindow = new google.maps.InfoWindow();
+	var shadow = new google.maps.MarkerImage("https://chart.googleapis.com/chart?chst=d_map_pin_shadow", new google.maps.Size(40, 37), null, new google.maps.Point(10, 37));
+	var size = new google.maps.Size(21, 34);
+    jQuery.get(en_xml, function(data) {
+		jQuery(data).find("marker").each(function() {
+			var lat = jQuery(this).attr("lat");
+			var lng = jQuery(this).attr("lng");
+			if (lat && lng) {
+				var latlng = new google.maps.LatLng(parseFloat(lat),parseFloat(lng));
+				bounds.extend(latlng);
+				
+				var text = (jQuery(this).attr("icon") || "").replace("Marker.png","").substring(0, 2) || "%e2%bc%80"; //closest to a default dot symbol
+				var colour = jQuery(this).attr("colour") || jQuery(this).attr("color") || "ff776b"; //google default red colour
+				var key = text+colour; //text can never be a hex colour
+				if (!icons[key]) {
+					icons[key] = new google.maps.MarkerImage("https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld="+text+"|"+colour+"|000000&.png", size);
+				}
+				var marker = new google.maps.Marker({
+					position: latlng,
+					icon: icons[key],
+					map: map,
+					shadow: shadow
+				});
+				
+				var html = jQuery(this).attr("html");
+				if (html) {
+					var xml_path = xml.substr(0,xml.lastIndexOf("/")+1);
+					html = html.replace(html.match(/href='(?!(http|ftp))/ig), "href='"+xml_path);
+					html = html.replace(html.match(/href="(?!(http|ftp))/ig), 'href="'+xml_path);
+					html = html.replace(html.match(/src='(?!(http|ftp))/ig), "src='"+xml_path);
+					html = html.replace(html.match(/src="(?!(http|ftp))/ig), 'src="'+xml_path);
+					google.maps.event.addListener(marker, 'click', function() {
+						infowindow.setContent(html); 
+						infowindow.open(map, marker);
+					});
+				} else {
+					marker.setClickable(false);
+				}
+			}
+		});
+		jQuery.each(["line","points"], function() {
+			jQuery(data).find(String(this)).each(function() {
+				var latlng_arr = [];
+				var colour = jQuery(this).attr("colour") || jQuery(this).attr("color") || "0000ff";
+				if (colour.charAt(0)!=="#") {
+					colour = "#"+colour;
+				}
+				
+				jQuery(this).find("point").each(function() {
+					var lat = jQuery(this).attr("lat");
+					var lng = jQuery(this).attr("lng");
+					if (lat && lng) {
+						var latlng = new google.maps.LatLng(parseFloat(lat),parseFloat(lng));
+						bounds.extend(latlng);
+						latlng_arr.push(latlng);
+					}
+				});
+				var line = new google.maps.Polyline({
+					path: latlng_arr,
+					strokeColor: colour,
+					strokeOpacity: parseFloat(jQuery(this).attr("opacity") || "0.75"),
+					strokeWeight: parseFloat(jQuery(this).attr("width") || "4")
+				});
+				line.setMap(map);
+			});
+		});
+		map.fitBounds(bounds);
+		
+		if (zoom !== -1) {
+			var listener = google.maps.event.addListener(map, "idle", function() { 
+				map.setZoom(zoom);
+				google.maps.event.removeListener(listener); 
+			});
+		}
+		google.maps.event.addListener(map, 'click', function() {
+			infowindow.close(map);
+		});
+    }, "xml");
+}
