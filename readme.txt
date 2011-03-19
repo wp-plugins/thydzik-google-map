@@ -7,9 +7,10 @@ Tested up to: 3.1
 Stable tag: 2.0
 
 thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your WordPress posts.
-== Description ==
 
 Rewritten code supporting latest WordPress and Google Map API v3 features!
+
+== Description ==
 
 thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your WordPress posts. With advantages over other existing Google maps plugins being;
 
@@ -17,7 +18,8 @@ thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your W
    1. Uses XML map data, this allows for maximum configurability, and supports multiple coloured and numbers makers and polylines. Info windows can contain html.
    1. Supports cross-domain XML files by using a PHP proxy (your XML file can be anywhere).
    1. Google Map width, height, zoom and map type are all individually configurable.
-   1. Allow readers to download gpx files which can be uploaded to GPS for easy navigation.   1. Google Maps API v3, no key required.
+   1. Allow readers to download gpx files which can be uploaded to GPS for easy navigation.
+   1. Google Maps API v3, no key required.
 
 [Official  Homepage](http://thydzik.com/category/thydzikgooglemap/) (with lots of working examples)
 
@@ -25,14 +27,18 @@ thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your W
 
 1. Upload folder 'thydzik-google-map' to the  '/wp-content/plugins/' directory.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
-1. Under 'Plugins' > 'thydzik Google Map', you will find the 'thydzik Google map setup' page, paste your API key in the box and click update options. The default map size can be changed here if desired.
+1. Under 'Plugins' > 'thydzik Google Map', you will find the 'thydzik Google map setup' page. The default map size can be changed here if desired.
 1. Upload a Google map XML data file with latitude and longitude points. An example XML file http://thydzik.com/thydzikGoogleMap/example.xml is included, it is better to create a directory outside the plugin directory as every time you update your xml files will be deleted.
 
 **Use**
 
 thydzikGoogleMap is called in a WordPress post by writing the following on a single line where you want the Google Map to appear:
 
-thydzikGoogleMap(example.xml, width, height, zoom, maptype, gpx)
+thydzikgooglemap(example.xml)
+
+For the more adventurous;
+
+thydzikgooglemap(example.xml, width, height, zoom, maptype)
 
 where:
 
