@@ -7,7 +7,9 @@ Tested up to: 3.1
 Stable tag: 2.0
 
 thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your WordPress posts.
-== Description ==Rewritten code supporting latest WordPress and Google Map API v3 features!
+== Description ==
+
+Rewritten code supporting latest WordPress and Google Map API v3 features!
 
 thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your WordPress posts. With advantages over other existing Google maps plugins being;
 
