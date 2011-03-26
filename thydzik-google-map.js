@@ -1,3 +1,5 @@
+jQuery.noConflict();
+
 function thydzikgm(devid, en_xml, xml, zoom, type, gpx) {
 	var bounds = new google.maps.LatLngBounds();
 
