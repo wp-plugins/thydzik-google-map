@@ -3,8 +3,9 @@ Contributors: thydzik
 Homepage link: http://thydzik.com/category/thydzikgooglemap/
 Tags: Google, Google Maps, plugin, thydzikGoogleMap, WordPress, thydzik-google-map
 Requires at least: 2.8
-Tested up to: 3.1
-Stable tag: 2.0.1
+Tested up to: 3.3
+Stable tag: 2.1
+Donate link: http://thydzik.com
 
 thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your WordPress posts.
 
@@ -20,6 +21,7 @@ thydzikGoogleMap is a WordPress plugin that creates inline Google maps in your W
    1. Google Map width, height, zoom and map type are all individually configurable.
    1. Allow readers to download gpx files which can be uploaded to GPS for easy navigation.
    1. Google Maps API v3, no key required.
+   1.Support for KML files.
 
 [Official  Homepage](http://thydzik.com/category/thydzikgooglemap/) (with lots of working examples)
 
@@ -84,3 +86,40 @@ A few pointers:
     * thydzikGoogleMap searches post text using the_content and replaces valid thydzikGoogleMap with HTML and Javascript to produce a Google map.
     * thydzikGoogleMap produces valid XHTML.
     * thydzikGoogleMap can read cross-domain XML files.
+
+== Changelog ==
+= 2.0 =
+* rewritten code
+* uses Google marker source
+* added gpx file downloads
+* optimised Javascript
+
+= 1.4.7 =
+* removed static markers and added dynamic marker generation functionality
+
+= 1.4.5 =
+* added functionality to not try to display map if page is proxied through another site, which would mean invalid API key
+* added map zoom and type options
+* added functionality for multiple maps on single post
+
+= 1.4 =
+* added functionality to not try to display map if page is proxied through another site, which would mean invalid api key
+* added zoom option
+
+= 1.3 =
+* addition of nice html output if plugin file is viewed outside WordPress
+* updated regex used to detect thydzikgooglemap in posts
+
+= 1.2 =
+* fix for non standard install locations
+
+= 1.1 =
+* addition of markers from 0 to 115
+* added xml proxy for cross domain xml files
+
+= 1.0 =
+* Initial Release
+
+
+== Upgrade Notice ==
+Upgrade via WordPress automatic plugin update./
